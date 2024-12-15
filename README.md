@@ -1,5 +1,7 @@
 # Rename Uploaded Files (RUF) Plugin
 
+![RUF! Rename Uploaded Files](https://github.com/emaech/ruf/raw/main/ruf/ruf.png)
+
 ## Description
 The **Rename Uploaded Files** plugin for WordPress allows users to easily rename uploaded media files (attachments) and updates database references accordingly. This helps maintain organized media libraries and ensures that any references to renamed files across posts and pages are automatically updated.
 
