@@ -26,3 +26,7 @@ The file name and all associated references (e.g., thumbnails, webp versions) wi
 ## Issues
 If you encounter any issues or bugs, you're on your own. I wrote this for myself and am not interested in maintaining it beyond my own needs.
 
+## Disclaimer
+This software is provided **"as is"**, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. By using this plugin, you agree to use it **at your own risk**. The author is not responsible for any damages, data loss, or other issues caused by the use of this plugin.
+
+
