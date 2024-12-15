@@ -37,6 +37,7 @@ function ruf_render_tool_page() {
     ?>
     <div class="wrap">
         <h1>Rename Uploaded Files</h1>
+		<img src="<?php echo plugins_url('ruf.png', __FILE__); ?>" alt="RUF! Rename Uploaded Files">
         <form method="post">
             <table class="form-table">
                 <tr>
