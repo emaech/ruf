@@ -17,13 +17,21 @@ The **Rename Uploaded Files** plugin for WordPress allows users to easily rename
 2. Upload the `ruf` plugin folder to the `/wp-content/plugins/` directory.
 3. Activate the plugin through the 'Plugins' menu in WordPress.
 
-## Usage
+## Usage - One at a Time
 1. Go to **Media > Rename Files** from the WordPress admin dashboard.
 2. Select the file you want to rename from the dropdown.
 3. Enter the new name for the file.
 4. Click the **Rename File** button to apply the changes.
 
 The file name and all associated references (e.g., thumbnails, webp versions) will be updated automatically.
+
+## Usage - Batch
+1. Go to **Media > Rename Files** from the WordPress admin dashboard.
+2. Enter the character string you want to **Replace**.
+3. Enter the character string you want to replace those characters **With** - you can leave this field blank if you just want to remove the characters.
+4. Click the **Batch Rename File** button to apply the changes.
+
+The file find all files with the character string and rename them name as well as all associated references (e.g., thumbnails, webp versions) will be updated automatically.
 
 ## Issues
 If you encounter any issues or bugs, you're on your own. I wrote this for myself and am not interested in maintaining it beyond my own needs.
