@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Rename Uploaded Files (RUF)
  * Description: Renames uploaded files and updates database references.
- * Version: 1.6
+ * Version: 1.7
  * Author: emaech
  */
 
@@ -23,6 +23,10 @@ function ruf_render_tool_page() {
         wp_die(__('You do not have sufficient permissions to access this page.'));
     }
 
+	global $wpdb;
+
+
+	// Single filename update.
     if (isset($_POST['ruf_file_id']) && isset($_POST['ruf_new_name'])) {
         $file_id = intval($_POST['ruf_file_id']);
         $new_name = sanitize_text_field(str_replace(' ', '-', $_POST['ruf_new_name']));
@@ -34,11 +38,75 @@ function ruf_render_tool_page() {
         }
     }
 
+
+	// Batch filename update.
+	if (isset($_POST['ruf_replace_string']) ) { 
+		$replace = sanitize_text_field($_POST['ruf_replace_string']);;
+		$with = sanitize_text_field($_POST['ruf_with_string']);
+		
+		// Get all attachments
+		$attachments = get_posts([ 'post_type' => 'attachment', 'numberposts' => -1 ]);
+		$attachment_data = [];
+
+		// Initialize a flag to track updates
+		$updated = false;
+	
+		// Load all the attachments into an array
+		foreach ($attachments as $attachment) {
+			$attachment_data[] = [
+				'ID' => $attachment->ID,
+				'file_name' => basename(get_attached_file($attachment->ID)),
+			];
+		}
+    
+		// Filter the array where file_name contains the search string
+		foreach ($attachment_data as $key => $data) {
+			// Compare the file name with the search term
+			if (strpos(strtolower($data['file_name']), strtolower($replace)) !== false) {
+				
+				// Get the file extension of the attachment
+				$ext = '.' . pathinfo($data['file_name'], PATHINFO_EXTENSION);
+				
+				// Replace the string in the file name in the array
+				$new_file_name = str_ireplace($replace, $with, $data['file_name']);
+				$new_file_name_no_ext = str_replace($ext,'',$new_file_name);
+				
+				
+				
+				// Update the value in the array
+				$attachment_data[$key]['file_name'] = $new_file_name_no_ext;
+
+				$updated = true; // Set flag to true when an update happens
+				
+				
+				// Call the rename function and update the file.
+				ruf_rename_file($data['ID'], $new_file_name_no_ext); // Exensions are added later.
+					
+					
+			}
+		}
+	
+	
+		// Check if any update happened
+		if ($updated) {
+			echo '<div class="updated"><p>Files renamed successfully!</p></div>';
+		} else {
+			echo '<div class="error"><p>Failed to rename any files.</p></div>';
+		}
+
+}
+
+
+
     ?>
     <div class="wrap">
-        <h1>Rename Uploaded Files</h1>
+        <h1>Rename Uploaded Files (RUF)</h1>
 		<img src="<?php echo plugins_url('ruf.png', __FILE__); ?>" alt="RUF! Rename Uploaded Files">
-        <form method="post">
+        <hr>
+		
+		<form method="post">
+		<h2>Rename One File</h2>
+		<pre>Do not include the file extension (e.g. ".jpg") in your new name.</pre>
             <table class="form-table">
                 <tr>
                     <th scope="row"><label for="ruf_file_id">File</label></th>
@@ -58,10 +126,33 @@ function ruf_render_tool_page() {
                     <td><input name="ruf_new_name" type="text" id="ruf_new_name" required /></td>
                 </tr>
             </table>
+			
             <p class="submit">
                 <input type="submit" class="button-primary" value="Rename File" />
             </p>
         </form>
+		<hr>
+		<form method="post">
+            <h2>Batch Rename Files</h2>
+			<pre>Warning! Engage your brain first! This may take a long time to complete and impact a lot of files!</pre>
+			<pre>This is a string replacement. e.g. it will replace "ABC" with "XYZ".</pre>
+			<pre>Don't navigate away while this is running. It won't be good.</pre>
+            <table class="form-table">
+                <tr>
+                    <th scope="row"><label for="ruf_replace_string">Replace</label></th>
+                    <td><input name="ruf_replace_string" type="text" id="ruf_replace_string" required /></td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="ruf_with_string">With (Leave blank to remove)</label></th>
+                    <td><input name="ruf_with_string" type="text" id="ruf_with_string" /></td>
+                </tr>
+            </table>
+            <p class="submit">
+                <input type="submit" class="button-primary" value="Batch Rename Files" />
+            </p>
+        </form>
+		
+		
     </div>
     <?php
 }
